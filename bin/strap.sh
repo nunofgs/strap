@@ -49,12 +49,13 @@ fi
 STDIN_FILE_DESCRIPTOR="0"
 [ -t "$STDIN_FILE_DESCRIPTOR" ] && STRAP_INTERACTIVE="1"
 
-# Set by web/app.rb
-# STRAP_GIT_NAME=
-# STRAP_GIT_EMAIL=
-# STRAP_GITHUB_USER=
-# STRAP_GITHUB_TOKEN=
-STRAP_ISSUES_URL="https://github.com/mikemcquaid/strap/issues/new"
+# Set by web app.
+STRAP_GIT_NAME=<%= STRAP_GIT_NAME %>
+STRAP_GIT_EMAIL=<%= STRAP_GIT_EMAIL %>
+STRAP_GITHUB_USER=<%= STRAP_GITHUB_USER %>
+STRAP_GITHUB_TOKEN=<%= STRAP_GITHUB_TOKEN %>
+STRAP_ISSUES_URL="https://github.com/nunofgs/strap/issues/new"
+STRAP_GITHUB_ORGANIZATION=<%= STRAP_GITHUB_ORGANIZATION %>
 
 STRAP_FULL_PATH="$(cd "$(dirname "$0")" && pwd)/$(basename "$0")"
 
