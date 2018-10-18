@@ -43,15 +43,15 @@ router
     context.attachment('strap.sh');
 
     const { accessToken, organizations, profile } = context.session.passport.user;
-    const email = profile.emails[0];
+    const email = profile.emails[0].value;
     const organizationOrUsername = context.query.organization || profile.username;
 
     if (![profile.username].concat(organizations).includes(organizationOrUsername)) {
       throw new Error('Invalid organization or username');
     }
 
-    await context.render('../../bin/strap.sh', {
-      STRAP_GIT_EMAIL: email.value,
+    await context.render('../bin/strap.sh', {
+      STRAP_GIT_EMAIL: email,
       STRAP_GIT_NAME: profile.displayName,
       STRAP_GITHUB_ORGANIZATION_OR_USERNAME: organizationOrUsername,
       STRAP_GITHUB_TOKEN: accessToken,
@@ -77,7 +77,8 @@ app
       await next();
     } catch (error) {
       // make sure that the content-disposition is not set to attachment, to not download the error page
-      context.response.remove('content-disposition');
+      context.remove('content-disposition');
+
       await context.render('error.html', { error });
     }
   })
