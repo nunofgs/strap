@@ -76,6 +76,8 @@ app
     try {
       await next();
     } catch (error) {
+      // make sure that the content-disposition is not set to attachment, to not download the error page
+      context.response.remove('content-disposition');
       await context.render('error.html', { error });
     }
   })
