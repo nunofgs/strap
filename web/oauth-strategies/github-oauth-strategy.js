@@ -4,7 +4,7 @@
  * Module exports.
  */
 
-const { Strategy: GitHubStrategy } = require('passport-github');
+const { Strategy: GitHubStrategy } = require('passport-github2');
 
 /**
  * Instances.

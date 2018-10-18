@@ -1,5 +1,5 @@
 {
-  "private": "true",
+  "private": true,
   "license": "MIT",
   "dependencies": {
     "ejs": "^2.5.8",
@@ -9,6 +9,6 @@
     "koa-session": "^5.8.1",
     "koa-views": "^6.1.4",
     "koa-views-render": "0.0.1",
-    "passport-github": "^1.1.0"
+    "passport-github2": "^0.1.11"
   }
 }
