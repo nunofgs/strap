@@ -50,7 +50,7 @@ router
       throw new Error('Invalid organization or username');
     }
 
-    await context.render('../../bin/strap.sh', {
+    await context.render('../bin/strap.sh', {
       STRAP_GIT_EMAIL: email.value,
       STRAP_GIT_NAME: profile.displayName,
       STRAP_GITHUB_ORGANIZATION: organizationOrUsername,
