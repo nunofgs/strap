@@ -256,11 +256,11 @@ else
 fi
 
 # Setup dotfiles
-if [ -n "$STRAP_GITHUB_USER" ]; then
-  DOTFILES_URL="https://github.com/$STRAP_GITHUB_USER/$STRAP_DOTFILES"
+if [ -n "$STRAP_GITHUB_ORGANIZATION" ]; then
+  DOTFILES_URL="https://github.com/$STRAP_GITHUB_ORGANIZATION/$STRAP_DOTFILES"
 
   if git ls-remote "$DOTFILES_URL" &>/dev/null; then
-    log "Fetching $STRAP_GITHUB_USER/$STRAP_DOTFILES from GitHub:"
+    log "Fetching $STRAP_GITHUB_ORGANIZATION/$STRAP_DOTFILES from GitHub:"
     if [ ! -d "$HOME/.dotfiles" ]; then
       log "Cloning to ~/.dotfiles:"
       git clone $Q "$DOTFILES_URL" ~/.dotfiles
