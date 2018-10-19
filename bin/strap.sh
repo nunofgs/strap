@@ -46,6 +46,7 @@ STRAP_GITHUB_USER="<%= STRAP_GITHUB_USER %>"
 STRAP_GITHUB_TOKEN="<%= STRAP_GITHUB_TOKEN %>"
 STRAP_ISSUES_URL="https://github.com/uphold/strap/issues/new"
 STRAP_GITHUB_ORGANIZATION="<%= STRAP_GITHUB_ORGANIZATION %>"
+STRAP_DOTFILES="<%= STRAP_DOTFILES %>"
 
 # We want to always prompt for sudo password at least once rather than doing
 # root stuff unexpectedly.
@@ -121,15 +122,15 @@ fi
 # Install the Xcode Command Line Tools.
 if ! [ -f "/Library/Developer/CommandLineTools/usr/bin/git" ]
 then
-    if [ -n "$STRAP_INTERACTIVE" ]; then
-      echo
-      logn "Requesting user install of Xcode Command Line Tools:"
-      xcode-select --install
-    else
-      echo
-      abort "Run 'xcode-select --install' to install the Xcode Command Line Tools."
-    fi
+  if [ -n "$STRAP_INTERACTIVE" ]; then
+    echo
+    logn "Requesting user install of Xcode Command Line Tools:"
+    xcode-select --install
+  else
+    echo
+    abort "Run 'xcode-select --install' to install the Xcode Command Line Tools."
   fi
+fi
 
 # Check if the Xcode license is agreed to and agree if not.
 xcode_license() {
@@ -256,10 +257,10 @@ fi
 
 # Setup dotfiles
 if [ -n "$STRAP_GITHUB_USER" ]; then
-  DOTFILES_URL="https://github.com/$STRAP_GITHUB_USER/dotfiles"
+  DOTFILES_URL="https://github.com/$STRAP_GITHUB_USER/$STRAP_DOTFILES"
 
   if git ls-remote "$DOTFILES_URL" &>/dev/null; then
-    log "Fetching $STRAP_GITHUB_USER/dotfiles from GitHub:"
+    log "Fetching $STRAP_GITHUB_USER/$STRAP_DOTFILES from GitHub:"
     if [ ! -d "$HOME/.dotfiles" ]; then
       log "Cloning to ~/.dotfiles:"
       git clone $Q "$DOTFILES_URL" ~/.dotfiles

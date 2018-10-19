@@ -45,6 +45,7 @@ router
     const { accessToken, organizations, profile } = context.session.passport.user;
     const email = profile.emails[0];
     const organizationOrUsername = context.query.organization || profile.username;
+    const dotfiles_repo = context.query.dotfiles_repo || "dotfiles";
 
     if (![profile.username].concat(organizations).includes(organizationOrUsername)) {
       throw new Error('Invalid organization or username');
@@ -55,7 +56,8 @@ router
       STRAP_GIT_NAME: profile.displayName,
       STRAP_GITHUB_ORGANIZATION: organizationOrUsername,
       STRAP_GITHUB_TOKEN: accessToken,
-      STRAP_GITHUB_USER: profile.username
+      STRAP_GITHUB_USER: profile.username,
+      STRAP_DOTFILES: dotfiles_repo
     });
   });
 
