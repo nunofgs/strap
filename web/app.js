@@ -44,16 +44,16 @@ router
 
     const { accessToken, organizations, profile } = context.session.passport.user;
     const email = profile.emails[0];
-    const organization = context.query.organization || profile.username;
+    const organizationOrUsername = context.query.organization || profile.username;
 
-    if (!~[profile.username].concat(organizations).indexOf(organization)) {
-      throw new Error('Invalid organization');
+    if (![profile.username].concat(organizations).includes(organizationOrUsername)) {
+      throw new Error('Invalid organization or username');
     }
 
     await context.render('../../bin/strap.sh', {
       STRAP_GIT_EMAIL: email.value,
       STRAP_GIT_NAME: profile.displayName,
-      STRAP_GITHUB_ORGANIZATION: organization,
+      STRAP_GITHUB_ORGANIZATION_OR_USERNAME: organizationOrUsername,
       STRAP_GITHUB_TOKEN: accessToken,
       STRAP_GITHUB_USER: profile.username
     });
