@@ -37,8 +37,8 @@ router
   }))
   .get('/strap.sh', async context => {
     if (context.isUnauthenticated()) {
-        return context.redirect('./');
-      }
+      return context.redirect('./');
+    }
 
     context.attachment('strap.sh');
 

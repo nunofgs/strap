@@ -122,15 +122,15 @@ fi
 # Install the Xcode Command Line Tools.
 if ! [ -f "/Library/Developer/CommandLineTools/usr/bin/git" ]
 then
-    if [ -n "$STRAP_INTERACTIVE" ]; then
-      echo
-      logn "Requesting user install of Xcode Command Line Tools:"
-      xcode-select --install
-    else
-      echo
-      abort "Run 'xcode-select --install' to install the Xcode Command Line Tools."
-    fi
+  if [ -n "$STRAP_INTERACTIVE" ]; then
+    echo
+    logn "Requesting user install of Xcode Command Line Tools:"
+    xcode-select --install
+  else
+    echo
+    abort "Run 'xcode-select --install' to install the Xcode Command Line Tools."
   fi
+fi
 
 # Check if the Xcode license is agreed to and agree if not.
 xcode_license() {
