@@ -43,7 +43,7 @@ router
     context.attachment('strap.sh');
 
     const { accessToken, organizations, profile } = context.session.passport.user;
-    const email = profile.emails.find(({ primary, verified }) => primary === true && verified === true);
+    const email = profile.emails[0];
     const organization = context.query.organization || profile.username;
 
     if (!~[profile.username].concat(organizations).indexOf(organization)) {
