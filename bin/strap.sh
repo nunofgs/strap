@@ -40,12 +40,13 @@ STDIN_FILE_DESCRIPTOR="0"
 [ -t "$STDIN_FILE_DESCRIPTOR" ] && STRAP_INTERACTIVE="1"
 
 # Set by web app.
-STRAP_GIT_NAME=<%= STRAP_GIT_NAME %>
-STRAP_GIT_EMAIL=<%= STRAP_GIT_EMAIL %>
-STRAP_GITHUB_USER=<%= STRAP_GITHUB_USER %>
-STRAP_GITHUB_TOKEN=<%= STRAP_GITHUB_TOKEN %>
-STRAP_ISSUES_URL="https://github.com/nunofgs/strap/issues/new"
-STRAP_GITHUB_ORGANIZATION_OR_USERNAME=<%= STRAP_GITHUB_ORGANIZATION_OR_USERNAME %>
+STRAP_GIT_NAME="<%= STRAP_GIT_NAME %>"
+STRAP_GIT_EMAIL="<%= STRAP_GIT_EMAIL %>"
+STRAP_GITHUB_USER="<%= STRAP_GITHUB_USER %>"
+STRAP_GITHUB_TOKEN="<%= STRAP_GITHUB_TOKEN %>"
+STRAP_ISSUES_URL="https://github.com/uphold/strap/issues/new"
+STRAP_GITHUB_ORGANIZATION_OR_USERNAME="<%= STRAP_GITHUB_ORGANIZATION_OR_USERNAME %>"
+STRAP_DOTFILES="<%= STRAP_DOTFILES %>"
 
 # We want to always prompt for sudo password at least once rather than doing
 # root stuff unexpectedly.
@@ -256,10 +257,10 @@ fi
 
 # Setup dotfiles
 if [ -n "$STRAP_GITHUB_USER" ]; then
-  DOTFILES_URL="https://github.com/$STRAP_GITHUB_USER/dotfiles"
+  DOTFILES_URL="https://github.com/$STRAP_GITHUB_USER/$STRAP_DOTFILES"
 
   if git ls-remote "$DOTFILES_URL" &>/dev/null; then
-    log "Fetching $STRAP_GITHUB_USER/dotfiles from GitHub:"
+    log "Fetching $STRAP_GITHUB_USER/$STRAP_DOTFILES from GitHub:"
     if [ ! -d "$HOME/.dotfiles" ]; then
       log "Cloning to ~/.dotfiles:"
       git clone $Q "$DOTFILES_URL" ~/.dotfiles
