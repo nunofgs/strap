@@ -4,8 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <title>Strap</title>
   </head>
   <body>
@@ -19,12 +18,27 @@
         <a class="btn btn-primary btn-lg" href="./github" role="button">Login with Github</a>
       <%} else {%>
         <form action="./strap.sh">
-          <div class="radio"><label><input name="organization" type="radio" value="<%= user.profile.username %>" checked><%= user.profile.username %></label></div>
-          <% for (const organization of user.organizations) {%>
-            <div class="radio"><label><input name="organization" type="radio" value="<%= organization %>"><%= organization %></label></div>
-          <% } %>
-
-          <input type="submit" class="btn btn-primary btn-lg" value="Download strap.sh" />
+          <div class="form-group">
+            <label>Choose the dotfiles repository:</label>
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon3">https://github.com/</span>
+              </div>
+              <select class="custom-select" name="organization" id="organization" >
+                  <option><%= user.profile.username %></option>
+                  <% for (const organization of user.organizations) {%>
+                    <option><%= organization %></option>
+                  <% } %>
+              </select>
+              <div class="input-group-append input-group-prepend">
+                <span class="input-group-text" id="basic-addon3">/</span>
+              </div>
+              <input type="text" class="form-control" name="dotfiles_repo" id="dotfiles_repo" aria-describedby="basic-addon3"  value= "dotfiles" placeholder="dotfiles">
+              <div class="input-group-append">
+                <button class="btn btn-outline-primary" type="submit">Download strap.sh</button>
+              </div>
+            </div>
+          </div>
         </form>
       <%}%>
 
