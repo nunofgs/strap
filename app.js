@@ -17,7 +17,7 @@ const views = require('koa-views');
  */
 
 const app = new Koa();
-const router = new Router();
+const router = new Router({ strict: true });
 const {
   PORT = 3000,
   SESSION_SECRET
