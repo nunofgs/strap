@@ -1,8 +1,5 @@
 # Strap
-A script to bootstrap a minimal macOS development system. This does not assume you're doing Ruby/Rails/web development but installs the minimal set of software every macOS developer will want.
-
-## Motivation
-Replacing [Boxen](https://github.com/boxen/boxen/) in [GitHub](https://github.com/) with a better tool. This post outlines the problems with Boxen and requirements for Strap and other tools used by GitHub: http://mikemcquaid.com/2016/06/15/replacing-boxen/
+A script to bootstrap a minimal macOS development system.
 
 ## Features
 - Disables Java in Safari (for better security)
@@ -17,55 +14,39 @@ Replacing [Boxen](https://github.com/boxen/boxen/) in [GitHub](https://github.co
 - Installs [Homebrew Services](https://github.com/Homebrew/homebrew-services) (for managing Homebrew-installed services)
 - Installs [Homebrew Cask](https://github.com/caskroom/homebrew-cask) (for installing graphical software)
 - Installs the latest macOS software updates (for better security)
-- Installs dotfiles from a user's `https://github.com/username/dotfiles` repository and runs `script/setup` to configure them.
+- Installs dotfiles from a user or organization's repository and runs `script/setup` to configure them.
 - Installs software from a user's `Brewfile` in their `https://github.com/username/homebrew-brewfile` repository or `.Brewfile` in their home directory.
-- A simple web application to set Git's name, email and GitHub token (needs authorized on any organisations you wish to access)
+- A simple web application to set Git's name, email and GitHub token (needs authorization on any organisations you wish to access)
 - Idempotent
 
-## Out of Scope Features
-- Enabling any network services by default (instead enable them when needed)
-- Installing Homebrew formulae by default for everyone in an organisation (install them with `Brewfile`s in project repositories instead of mandating formulae for the whole organisation)
-- Opting-out of any macOS updates (Apple's security updates and macOS updates are there for a reason)
-- Disabling security features (these are a minimal set of best practises)
-- Add phone number to security screen message (want to avoid prompting users for information on installation)
-
 ## Usage
-Open https://macos-strap.herokuapp.com/ in your web browser.
+Open https://strap.uphold.com/ in your web browser.
 
 Instead, to run Strap locally run:
 ```bash
-git clone https://github.com/MikeMcQuaid/strap
+git clone https://github.com/uphold/strap
 cd strap
 bash bin/strap.sh # or bash bin/strap.sh --debug for more debugging output
 ```
 
 Instead, to run the web application locally run:
 ```bash
-git clone https://github.com/mikemcquaid/strap
+git clone https://github.com/uphold/strap
 cd strap
-GITHUB_KEY="..." GITHUB_SECRET="..." ./script/server
+GITHUB_CLIENT_ID="..." GITHUB_CLIENT_SECRET="..." node app.js
 ```
 
-Instead, to deploy to [Heroku](https://www.heroku.com) click:
-
-[![Deploy to Heroku](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
-
-## Web Application Configuration Environment Variables
-- `GITHUB_KEY`: the GitHub.com Application Client ID..
-- `GITHUB_SECRET`: the GitHub.com Application Client Secret..
+## Web Application Environment Variables
+- `GITHUB_CLIENT_ID`: the GitHub.com Application Client ID.
+- `GITHUB_CLIENT_SECRET`: the GitHub.com Application Client Secret.
+- `PORT`: the port for the HTTP server (defaults to 3000).
 - `SESSION_SECRET`: the secret used for cookie session storage.
-- `WEB_CONCURRENCY`: the number of Unicorn (web server) processes to run (defaults to 3).
-- `STRAP_ISSUES_URL`: the URL where users should file issues (defaults to https://github.com/mikemcquaid/strap/issues/new).
-- `STRAP_BEFORE_INSTALL`: instructions displayed in the web application for users to follow before installing Strap (wrapped in `<li>` tags).
+- `STRAP_ISSUES_URL`: the URL where users should file issues (defaults to https://github.com/uphold/strap/issues/new).
 
-## Status
-Stable and in active development.
+## Credits
 
-[![Build Status](https://travis-ci.org/MikeMcQuaid/strap.svg)](https://travis-ci.org/MikeMcQuaid/strap)
-
-## Contact
-[Mike McQuaid](mailto:mike@mikemcquaid.com)
+Original idea was from [mikemcquaid/strap](https://github.com/mikemcquaid/strap).
 
 ## License
-Licensed under the [MIT License](http://en.wikipedia.org/wiki/MIT_License).
-The full license text is available in [LICENSE.txt](https://github.com/mikemcquaid/strap/blob/master/LICENSE.txt).
+
+MIT
