@@ -1,7 +1,19 @@
 os: osx
 osx_image: xcode10
 
-# Check the syntax of the shell script.
 script:
+
+  # Render a strap.sh file manually.
+  - npm -g install ejs-cli
+  - bin/render_strap.sh
+
+  # Remove Homebrew, Xcode and Command Line Tools.
+  - travis_wait sudo rm -rf /usr/local/bin/brew /usr/local/.??* /Applications/Xcode.app /Library/Developer/CommandLineTools /usr/local/Caskroom
+  - sudo pkgutil --forget com.apple.pkg.CLTools_Executables
+
+  # Execute script (skip file encryption since it prompts for user password)
+  - SKIP_FILE_ENCRYPTION=true bin/strap2.sh --debug
+
+  # Check the syntax of the shell script.
   - brew install shellcheck
   - shellcheck bin/strap.sh
