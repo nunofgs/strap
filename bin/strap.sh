@@ -70,7 +70,7 @@ log()   { STRAP_STEP="$*"; sudo_init; echo "--> $*"; }
 logn()  { STRAP_STEP="$*"; sudo_init; printf -- "--> %s " "$*"; }
 logk()  { STRAP_STEP="";   echo "OK"; }
 escape() {
-  echo "${1//\'/\\\'}"
+  printf '%s' "${1//\'/\'}"
 }
 
 MACOS_VERSION="$(sw_vers -productVersion)"
@@ -95,9 +95,11 @@ sudo defaults write /Library/Preferences/com.apple.alf globalstate -int 1
 sudo launchctl load /System/Library/LaunchDaemons/com.apple.alf.agent.plist 2>/dev/null
 
 if [ -n "$STRAP_GIT_NAME" ] && [ -n "$STRAP_GIT_EMAIL" ]; then
+  LOGIN_TEXT=$(escape "Found this computer? Please contact $STRAP_GIT_NAME at $STRAP_GIT_EMAIL.")
+  echo "$LOGIN_TEXT" | grep -q '[()]' && LOGIN_TEXT="'$LOGIN_TEXT'"
   sudo defaults write /Library/Preferences/com.apple.loginwindow \
     LoginwindowText \
-    "'Found this computer? Please contact $(escape "$STRAP_GIT_NAME") at $(escape "$STRAP_GIT_EMAIL").'"
+    "$LOGIN_TEXT"
 fi
 logk
 
@@ -126,14 +128,47 @@ fi
 # Install the Xcode Command Line Tools.
 if ! [ -f "/Library/Developer/CommandLineTools/usr/bin/git" ]
 then
-  if [ -n "$STRAP_INTERACTIVE" ]; then
-    echo
-    logn "Requesting user install of Xcode Command Line Tools:"
-    xcode-select --install
+  log "Installing the Xcode Command Line Tools:"
+  CLT_PLACEHOLDER="/tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress"
+  sudo touch "$CLT_PLACEHOLDER"
+
+  # shellcheck disable=SC2086,SC2183
+  printf -v MACOS_VERSION_NUMERIC "%02d%02d%02d" ${MACOS_VERSION//./ }
+  if [ "$MACOS_VERSION_NUMERIC" -ge "100900" ] &&
+     [ "$MACOS_VERSION_NUMERIC" -lt "101000" ]
+  then
+    CLT_MACOS_VERSION="Mavericks"
   else
-    echo
-    abort "Run 'xcode-select --install' to install the Xcode Command Line Tools."
+    CLT_MACOS_VERSION="$(echo "$MACOS_VERSION" | grep -E -o "10\\.\\d+")"
   fi
+  if [ "$MACOS_VERSION_NUMERIC" -ge "101300" ]
+  then
+    CLT_SORT="sort -V"
+  else
+    CLT_SORT="sort"
+  fi
+
+  CLT_PACKAGE=$(softwareupdate -l | \
+                grep -B 1 -E "Command Line (Developer|Tools)" | \
+                awk -F"*" '/^ +\*/ {print $2}' | \
+                sed 's/^ *//' | \
+                grep "$CLT_MACOS_VERSION" |
+                $CLT_SORT |
+                tail -n1)
+  sudo softwareupdate -i "$CLT_PACKAGE"
+  sudo rm -f "$CLT_PLACEHOLDER"
+  if ! [ -f "/Library/Developer/CommandLineTools/usr/bin/git" ]
+  then
+    if [ -n "$STRAP_INTERACTIVE" ]; then
+      echo
+      logn "Requesting user install of Xcode Command Line Tools:"
+      xcode-select --install
+    else
+      echo
+      abort "Run 'xcode-select --install' to install the Xcode Command Line Tools."
+    fi
+  fi
+  logk
 fi
 
 # Check if the Xcode license is agreed to and agree if not.
@@ -214,18 +249,12 @@ fi
 
 # Download Homebrew.
 export GIT_DIR="$HOMEBREW_REPOSITORY/.git" GIT_WORK_TREE="$HOMEBREW_REPOSITORY"
-[ -d "$GIT_DIR" ] && HOMEBREW_EXISTING="1"
 git init $Q
 git config remote.origin.url "https://github.com/Homebrew/brew"
 git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
-if [ -n "$HOMEBREW_EXISTING" ]
-then
-  git fetch $Q
-else
-  git fetch $Q --no-tags --depth=1 --force --update-shallow
-fi
+git fetch $Q --tags --force
 git reset $Q --hard origin/master
-unset GIT_DIR GIT_WORK_TREE HOMEBREW_EXISTING
+unset GIT_DIR GIT_WORK_TREE
 logk
 
 # Update Homebrew.
@@ -237,7 +266,7 @@ logk
 # Install Homebrew Bundle, Cask and Services tap.
 log "Installing Homebrew taps and extensions:"
 brew bundle --file=- <<EOF
-tap 'caskroom/cask'
+tap 'homebrew/cask'
 tap 'homebrew/core'
 tap 'homebrew/services'
 EOF
@@ -279,12 +308,18 @@ if [ -n "$STRAP_GITHUB_ORGANIZATION_OR_USERNAME" ]; then
       for i in script/setup script/bootstrap; do
         if [ -f "$i" ] && [ -x "$i" ]; then
           log "Running dotfiles $i:"
-          "$i" 2>/dev/null
+          if [ -n "$STRAP_DEBUG" ]; then
+            "$i"
+          else
+            "$i" 2>/dev/null
+          fi
           break
         fi
       done
     )
     logk
+  else
+    log "Could not git clone $DOTFILES_URL"
   fi
 fi
 
@@ -307,28 +342,6 @@ if [ -n "$STRAP_GITHUB_USER" ] && { [ ! -f "$HOME/.Brewfile" ] || [ "$HOME/.Brew
     ln -sf ~/.homebrew-brewfile/Brewfile ~/.Brewfile
     logk
   fi
-fi
-
-# Install from local Brewfile
-if [ -f "$HOME/.Brewfile" ]; then
-  log "Installing from user Brewfile on GitHub:"
-  brew bundle check --global || brew bundle --global
-  logk
-fi
-
-# Tap a custom Homebrew tap
-if [ -n "$CUSTOM_HOMEBREW_TAP" ]; then
-  read -ra CUSTOM_HOMEBREW_TAP <<< "$CUSTOM_HOMEBREW_TAP"
-  log "Running 'brew tap ${CUSTOM_HOMEBREW_TAP[*]}':"
-  brew tap "${CUSTOM_HOMEBREW_TAP[@]}"
-  logk
-fi
-
-# Run a custom `brew` command
-if [ -n "$CUSTOM_BREW_COMMAND" ]; then
-  log "Executing 'brew $CUSTOM_BREW_COMMAND':"
-  brew "$CUSTOM_BREW_COMMAND"
-  logk
 fi
 
 STRAP_SUCCESS="1"
