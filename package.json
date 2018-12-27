@@ -1,6 +1,9 @@
 {
   "private": true,
   "license": "MIT",
+  "scripts": {
+    "start": "node src/app.js"
+  },
   "dependencies": {
     "ejs": "^2.5.8",
     "koa": "^2.5.0",
