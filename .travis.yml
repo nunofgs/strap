@@ -1,19 +1,18 @@
 os: osx
 osx_image: xcode10
 
-script:
-
-  # Render a strap.sh file manually.
+install:
+  # Install testing dependencies.
   - npm -g install ejs-cli
-  - bin/render_strap.sh
+  - brew install bats-core shellcheck
 
   # Remove Homebrew, Xcode and Command Line Tools.
   - travis_wait sudo rm -rf /usr/local/bin/brew /usr/local/.??* /Applications/Xcode.app /Library/Developer/CommandLineTools /usr/local/Caskroom
   - sudo pkgutil --forget com.apple.pkg.CLTools_Executables
 
-  # Execute script (skip file encryption since it prompts for user password)
-  - SKIP_FILE_ENCRYPTION=true bin/strap2.sh --debug
+script:
+  # Lint shell scripts (exclude warnings: `unrecognized shebang` [SC1008], `@test literal {}` [SC1083 + SC1089]).
+  - shellcheck --exclude SC1008,SC1083,SC1089 bin/*.sh test/*.sh
 
-  # Check the syntax of the shell script.
-  - brew install shellcheck
-  - shellcheck bin/strap.sh
+  # Run tests.
+  - travis_wait test/strap.test.sh
