@@ -71,7 +71,7 @@ passport.use(githubOauthStrategy);
 // Setup app.
 app
   .use(session(app))
-  .use(views(__dirname + '/public', { map: { html: 'ejs', sh: 'ejs' } }))
+  .use(views(__dirname + '/../public', { map: { html: 'ejs', sh: 'ejs' } }))
   .use(passport.initialize())
   .use(passport.session())
   .use(async (context, next) => {
