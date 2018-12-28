@@ -1,0 +1,20 @@
+service: strap
+
+plugins:
+  - serverless-offline
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  region: eu-west-1
+  environment:
+    GITHUB_CLIENT_ID: ${env:GITHUB_CLIENT_ID}
+    GITHUB_CLIENT_SECRET: ${env:GITHUB_CLIENT_SECRET}
+    SESSION_SECRET: ${env:SESSION_SECRET}
+
+functions:
+  get-strap:
+    handler: src/app.handler
+    events:
+      - http: GET /
+      - http: GET /{any+}

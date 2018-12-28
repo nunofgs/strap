@@ -1,0 +1,42 @@
+---
+resources:
+  - name: strap @github
+    type: git
+    source:
+      branch: master
+      private_key: |
+        ((github_user.private_key))
+      uri: git@github.com:uphold/strap.git
+
+jobs:
+  - name: deploy-strap
+    serial: true
+    plan:
+      - get: strap
+        resource: strap @github
+        trigger: true
+
+      - task: deploy-lambda
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: node
+              tag: 11
+          params:
+            AWS_ACCESS_KEY_ID: ((aws.access_key_id))
+            AWS_SECRET_ACCESS_KEY: ((aws.secret_access_key))
+            GITHUB_CLIENT_ID: ((github.client_id))
+            GITHUB_CLIENT_SECRET: ((github.client_secret))
+            SESSION_SECRET: ((session.secret))
+          inputs:
+            - name: strap
+          run:
+            path: sh
+            args:
+              - -ec
+              - |
+                cd strap
+                yarn
+                ./node_modules/.bin/serverless deploy --stage production
