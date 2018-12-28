@@ -5,10 +5,11 @@
  */
 
 const { randomBytes } = require('crypto');
-const githubOauthStrategy = require('./oauth-strategies/github-oauth-strategy');
 const Koa = require('koa');
-const passport = require('koa-passport');
 const Router = require('koa-router');
+const githubOauthStrategy = require('./oauth-strategies/github-oauth-strategy');
+const passport = require('koa-passport');
+const serverless = require('serverless-http');
 const session = require('koa-session');
 const views = require('koa-views');
 
@@ -19,7 +20,6 @@ const views = require('koa-views');
 const app = new Koa();
 const router = new Router({ strict: true });
 const {
-  PORT = 3000,
   SESSION_SECRET
 } = process.env;
 
@@ -86,5 +86,7 @@ app
     }
   })
   .use(router.routes())
-  .use(router.allowedMethods())
-  .listen(PORT);
+  .use(router.allowedMethods());
+
+// Export app.
+module.exports.handler = serverless(app);
