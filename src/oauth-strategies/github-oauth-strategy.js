@@ -18,8 +18,7 @@ const {
 // Github strategy.
 const strategy = new GitHubStrategy({
   clientID: GITHUB_CLIENT_ID,
-  clientSecret: GITHUB_CLIENT_SECRET,
-  scope: 'user:email,repo'
+  clientSecret: GITHUB_CLIENT_SECRET
 }, (accessToken, refreshToken, profile, cb) => {
   strategy._oauth2._request('GET', profile._json.organizations_url, { 'Accept': 'application/vnd.github.v3+json' }, undefined, accessToken, (err, body) => {
     if (err) {
