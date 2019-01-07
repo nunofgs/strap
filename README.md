@@ -33,13 +33,13 @@ Instead, to run the web application locally run:
 ```bash
 git clone https://github.com/uphold/strap
 cd strap
-GITHUB_CLIENT_ID="..." GITHUB_CLIENT_SECRET="..." node app.js
+yarn
+GITHUB_CLIENT_ID="..." GITHUB_CLIENT_SECRET="..." sls offline start
 ```
 
 ## Web Application Environment Variables
 - `GITHUB_CLIENT_ID`: the GitHub.com Application Client ID.
 - `GITHUB_CLIENT_SECRET`: the GitHub.com Application Client Secret.
-- `PORT`: the port for the HTTP server (defaults to 3000).
 - `SESSION_SECRET`: the secret used for cookie session storage.
 - `STRAP_ISSUES_URL`: the URL where users should file issues (defaults to https://github.com/uphold/strap/issues/new).
 
