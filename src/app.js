@@ -32,7 +32,7 @@ router
     await context.render('index.html');
   })
   .get('/github', passport.authenticate('github', {
-    scope: [ 'user:email', 'read:org'],
+    scope: ['user:email', 'read:org'],
     successReturnToOrRedirect: './'
   }))
   .get('/strap.sh', async context => {
