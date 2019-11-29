@@ -15,7 +15,7 @@ EOF
   )
 
   # Execute script (skip file encryption since it prompts for user password)
-  SKIP_FILE_ENCRYPTION=true bash <(ejs-cli bin/strap.sh -O "$CONFIG")
+  STRAP_CI=1 STRAP_DEBUG=1 bash <(ejs-cli bin/strap.sh -O "$CONFIG")
 }
 
 @test "should set git config" {
