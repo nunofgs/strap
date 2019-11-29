@@ -1,0 +1,19 @@
+name: CI
+
+on: [pull_request]
+
+jobs:
+  test:
+    runs-on: macOS-latest
+
+    steps:
+    - uses: actions/checkout@master
+    - name: Install dependencies
+      run: |
+        npm -g install ejs-cli
+        brew install shellcheck
+    - name: Lint
+      run: |
+        shellcheck --exclude SC1008,SC1083,SC1089 bin/*.sh test/*.sh
+    - name: Run test script
+      run: test/strap.test.sh
