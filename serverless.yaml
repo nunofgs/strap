@@ -7,7 +7,7 @@ provider:
   name: aws
   runtime: nodejs8.10
   region: eu-west-1
-  deploymentBucket:$
+  deploymentBucket:
     serverSideEncryption: AES256
   environment:
     GITHUB_CLIENT_ID: ${env:GITHUB_CLIENT_ID}
